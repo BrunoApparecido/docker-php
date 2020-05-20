@@ -1,9 +1,26 @@
-php:
-  build: ./php/
-  ports:
-   - "80:80"
-   - "443:443"
-  environment:
-    XDEBUG_CONFIG: remote_host=host.docker.internal remote_port=9000 remote_enable=1
-  volumes:
-   - ./www:/var/www/html 
+version: '3.3'
+
+services:
+  db:
+    image: mysql:latest
+    volumes:
+      - db_data:/var/lib/mysql
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: mydb123
+      MYSQL_DATABASE: mydb
+      MYSQL_USER: mydb
+      MYSQL_PASSWORD: mydb123
+  php:
+    depends_on:
+      - db
+    build: ./php/
+    ports:
+    - "80:80"
+    - "443:443"
+    environment:
+      XDEBUG_CONFIG: remote_host=host.docker.internal remote_port=9000 remote_enable=1
+    volumes:
+    - ./www:/var/www/html 
+volumes:
+  db_data: {}
